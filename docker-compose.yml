@@ -54,7 +54,7 @@ services:
     command:
     - sh
     - -c # this is to evaluate the $REDIS_PASSWORD from the env
-    - redis-server --appendonly yes --requirepass $$REDIS_PASSWORD ## $$ because of docker-compose
+    - redis-server --appendonly yes --requirepass ${REDIS_PASSWORD} ## $$ because of docker-compose
     #env_file: env/redis.env
     environment:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
@@ -65,7 +65,7 @@ services:
     command:
     - sh
     - -c # this is to evaluate the $REDIS_PASSWORD from the env
-    - redis-server --requirepass $${REDIS_CACHE_PASSWORD} ## $$ because of docker-compose
+    - redis-server --requirepass ${REDIS_CACHE_PASSWORD} ## $$ because of docker-compose
     #env_file: env/redis-cache.env
     environment:
       - REDIS_CACHE_PASSWORD=${REDIS_CACHE_PASSWORD}

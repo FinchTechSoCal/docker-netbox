@@ -1,0 +1,87 @@
+---
+version: "2.1"
+services:
+  netbox:
+    image: lscr.io/linuxserver/netbox:latest
+    container_name: netbox
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - SUPERUSER_EMAIL=services@finchtech.com
+      - SUPERUSER_PASSWORD=password
+      - ALLOWED_HOST=netbox.finchtech.com
+      - DB_NAME=netbox
+      - DB_USER=netbox
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
+      - DB_HOST=postgres
+      - DB_PORT=
+      - REDIS_HOST=redis
+      - REDIS_PORT=
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_DB_TASK=
+      - REDIS_DB_CACHE=
+      - BASE_PATH= #optional
+      - REMOTE_AUTH_ENABLED= #optional
+      - REMOTE_AUTH_BACKEND= #optional
+      - REMOTE_AUTH_HEADER= #optional
+      - REMOTE_AUTH_AUTO_CREATE_USER= #optional
+      - REMOTE_AUTH_DEFAULT_GROUPS= #optional
+      - REMOTE_AUTH_DEFAULT_PERMISSIONS= #optional
+    volumes:
+      - ${LOCVOL1}netbox/app:/config
+    ports:
+      - 8000:8000
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - redis
+#
+  postgres:
+    image: docker.io/postgres:15-alpine
+    container_name: postgres
+    environment:
+    - POSTGRES_DB=netbox
+    - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    - POSTGRES_USER=netbox
+    volumes:
+      - ${LOCVOL1}netbox/postgres:/var/lib/postgresql/data
+    restart: always
+#
+  # redis
+  redis:
+    image: docker.io/redis:7-alpine
+    command:
+    - sh
+    - -c # this is to evaluate the $REDIS_PASSWORD from the env
+    - redis-server --appendonly yes --requirepass $$REDIS_PASSWORD ## $$ because of docker-compose
+    #env_file: env/redis.env
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    volumes:
+    - ${LOCVOL1}netbox/redis-data:/data
+  redis-cache:
+    image: docker.io/redis:7-alpine
+    command:
+    - sh
+    - -c # this is to evaluate the $REDIS_PASSWORD from the env
+    - redis-server --requirepass $${REDIS_CACHE_PASSWORD} ## $$ because of docker-compose
+    #env_file: env/redis-cache.env
+    environment:
+      - REDIS_CACHE_PASSWORD=${REDIS_CACHE_PASSWORD}
+    volumes:
+    - ${LOCVOL1}netbox/redis-cache-data:/data
+#
+  adminer:
+    image: adminer:latest
+    restart: unless-stopped
+    ports:
+      - 8080:8080
+#
+#
+#
+#
+networks:
+  default:
+    external:
+      name: ${CONNET}

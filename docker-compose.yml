@@ -8,9 +8,9 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
-      - SUPERUSER_EMAIL=services@finchtech.com
-      - SUPERUSER_PASSWORD=password
-      - ALLOWED_HOST=netbox.finchtech.com
+      - SUPERUSER_EMAIL=${NETBOX_SUPEREMAIL}
+      - SUPERUSER_PASSWORD=${NETBOX_SUPERPASS}
+      - ALLOWED_HOST=${NETBOX_HOST}
       - DB_NAME=netbox
       - DB_USER=netbox
       - DB_PASSWORD=${POSTGRES_PASSWORD}
@@ -30,8 +30,8 @@ services:
       - REMOTE_AUTH_DEFAULT_PERMISSIONS= #optional
     volumes:
       - ${LOCVOL1}netbox/app:/config
-    ports:
-      - 8000:8000
+    #ports:
+    #  - 8001:8000
     restart: unless-stopped
     depends_on:
       - postgres
@@ -48,7 +48,6 @@ services:
       - ${LOCVOL1}netbox/postgres:/var/lib/postgresql/data
     restart: always
 #
-  # redis
   redis:
     image: docker.io/redis:7-alpine
     command:

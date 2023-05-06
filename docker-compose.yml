@@ -75,8 +75,8 @@ services:
   adminer:
     image: adminer:latest
     restart: unless-stopped
-    ports:
-      - 8080:8080
+    #ports:
+    #  - 8080:8080
 #
 #
 #

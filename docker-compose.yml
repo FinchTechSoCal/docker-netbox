@@ -14,7 +14,7 @@ services:
       - DB_NAME=netbox
       - DB_USER=netbox
       - DB_PASSWORD=${POSTGRES_PASSWORD}
-      - DB_HOST=redis
+      - DB_HOST=postgres
       - DB_PORT=
       - REDIS_HOST=redis
       - REDIS_PORT=

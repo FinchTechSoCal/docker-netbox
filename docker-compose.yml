@@ -14,7 +14,7 @@ services:
       - DB_NAME=netbox
       - DB_USER=netbox
       - DB_PASSWORD=${POSTGRES_PASSWORD}
-      - DB_HOST=postgres
+      - DB_HOST=netbox-postgres
       - DB_PORT=
       - REDIS_HOST=redis
       - REDIS_PORT=
@@ -34,12 +34,12 @@ services:
     #  - 8001:8000
     restart: unless-stopped
     depends_on:
-      - postgres
+      - netbox-postgres
       - redis
 #
-  postgres:
+  netbox-postgres:
     image: docker.io/postgres:15-alpine
-    #container_name: postgres
+    container_name: netbox-postgres
     environment:
     - POSTGRES_DB=netbox
     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
